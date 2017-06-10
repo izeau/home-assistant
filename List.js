@@ -11,7 +11,7 @@ import {
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { connect } from 'react-redux';
-import { checkItem, createItem } from './redux';
+import { checkItem, createItem, showModal } from './redux';
 
 class List extends React.Component {
   constructor(props) {
@@ -65,12 +65,7 @@ class List extends React.Component {
           visible={this.props.modal}
           >
          <View style={{marginTop: 22}}>
-          <View>
-            <TextInput
-              placeholder="Tâche ..."
-              onChangeText={(newItemName) => this.setState({newItemName})}
-            />
-          </View>
+
          </View>
         </Modal>
       </View>
@@ -82,15 +77,15 @@ class List extends React.Component {
       <TouchableHighlight underlayColor={'#f7f5ef'} onPress={() => this._toggleCheck(item)}>
         <View style={styles.listItem}>
           {item.checked
-            ? <Icon name="md-checkmark-circle-outline" size={18} style={{ width: 30, padding: 10 }} color="#090" />
-            : <View style={{ width: 30 }} /> }
-          <Text style={{flex: 1, padding: 20, color: '#0C161B', fontSize: 16 }}>{item.name}</Text>
+            ? <Icon name="md-checkmark-circle-outline" size={18} style={{ width: 35, padding: 20, paddingRight: 0, paddingLeft: 15 }} color="#090" />
+            : <View style={{ width: 35 }} /> }
+          <Text style={{flex: 1, padding: 20, paddingRight: 10, paddingLeft: 5, color: '#0C161B', fontSize: 16 }}>{item.name}</Text>
           <Icon.Button
             name="ios-more-outline"
             borderRadius={0}
-            backgroundColor="#CCCDC4"
+            backgroundColor="#E9E5D7"
             iconStyle={styles.iconItemList}
-            onPress={() => console.warn("edit")}/>
+            onPress={() =>  console.warn("next step")/*this.props.dispatch(showModal())*/ }/>
         </View>
       </TouchableHighlight>
     );
@@ -116,8 +111,8 @@ const styles = StyleSheet.create({
   },
   addInput: {
     flex:2,
-    paddingLeft: 60,
-    paddingRight: 20,
+    paddingLeft: 40,
+    paddingRight: 35,
     backgroundColor: '#f7f5ef',
     height: 60
   },
