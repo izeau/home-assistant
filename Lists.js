@@ -1,21 +1,22 @@
 import React from 'react';
 import { StyleSheet, Text, ListView, TouchableHighlight } from 'react-native';
+import { connect } from 'react-redux';
 import List from './List';
 
-export default class Lists extends React.Component {
-
-  constructor() {
+class Lists extends React.Component {
+  constructor(props) {
     super();
-    const ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
+    const ds = new ListView.DataSource({ rowHasChanged: (r1, r2) => r1 !== r2 });
     this.state = {
-      lists: ds.cloneWithRows(['Choses à faire', 'Courses'])
+      lists: ds.cloneWithRows(props.lists),
     };
   }
 
-  _onForward(listName) {
+  _onForward(list) {
     this.props.navigator.push({
       component: List,
-      title: listName,
+      title: list.name,
+      passProps: { items: list.items },
     });
   }
 
@@ -23,19 +24,27 @@ export default class Lists extends React.Component {
     return (
       <ListView style={styles.lists}
         dataSource={this.state.lists}
-        renderRow={rowData => this.renderRow(rowData)}
+        renderRow={list => this.renderRow(list)}
       />
     );
   }
 
-  renderRow(rowData) {
+  renderRow(list) {
     return (
-      <TouchableHighlight underlayColor={'#CCC'} onPress={() => this._onForward(rowData)}>
-        <Text style={styles.list}>{rowData}</Text>
+      <TouchableHighlight
+        style={styles.list}
+        underlayColor={'#CCC'}
+        onPress={() => this._onForward(list)}
+      >
+        <Text>{list.name}</Text>
       </TouchableHighlight>
     );
   }
 }
+
+const mapStateToProps = ({ lists }) => ({ lists });
+
+export default connect(mapStateToProps)(Lists);
 
 const styles = StyleSheet.create({
   lists: {
@@ -43,6 +52,12 @@ const styles = StyleSheet.create({
   },
   list: {
     flex: 1,
-    justifyContent: 'flex-start'
-  }
+    justifyContent: 'center',
+    borderTopWidth: 1,
+    borderColor: '#DDD',
+    borderStyle: 'solid',
+    borderBottomWidth: 1,
+    marginTop: -1,
+    padding: 10,
+  },
 });
