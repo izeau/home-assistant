@@ -1,33 +1,16 @@
 const initialState = {
   modal: false,
-  lists: [{
-    name: 'Choses à faire',
-    items: [
-      {
-        name: 'Changer la litière',
-        checked: false
-      },
-      {
-        name: 'Passer l’aspirateur',
-        checked: true
-      }
-    ],
-  }, {
-    name: 'Courses',
-    items: [
-      {
-        name: 'Dentifrice',
-        checked: false
-      },
-      {
-        name: 'Mayonnaise',
-        checked: false
-      }
-    ],
-  }],
+  lists: [],
 };
 
 const actions = {
+  SET_LISTS(state, action) {
+    return {
+      ...state,
+      lists: action.lists
+    };
+  },
+
   MODAL_VISIBILITY(state, action) {
     return {
       ...state,
@@ -91,6 +74,12 @@ export default (state = initialState, { type, ...action}) => {
 
   return state;
 }
+
+export const getLists = () => dispatch => {
+  fetch(new Request('/api/lists'))
+    .then(response => response.json())
+    .then(list => dispatch({ type: 'SET_LISTS', lists: lists }));
+};
 
 export const checkItem = (list, item) => {
   return { type: 'CHECK', list, item };
