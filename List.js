@@ -1,8 +1,17 @@
 import React from 'react';
-import { StyleSheet, Text, TouchableHighlight, ListView, View } from 'react-native';
+import {
+  Button,
+  StyleSheet,
+  Text,
+  TouchableHighlight,
+  ListView,
+  View,
+  Modal,
+  TextInput,
+} from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
-import { checkItem } from './redux';
 import { connect } from 'react-redux';
+import { checkItem, createItem } from './redux';
 
 class List extends React.Component {
   constructor(props) {
@@ -17,16 +26,39 @@ class List extends React.Component {
 
   componentWillReceiveProps({ list: { items }}) {
     this.setState({
-      listItems: this.state.ds.cloneWithRows(items)
+      listItems: this.state.ds.cloneWithRows(items),
+      newItemName: ''
     });
   }
 
   render() {
     return (
-      <ListView style={styles.list}
-        dataSource={this.state.listItems}
-        renderRow={(item) => this._renderRow(item)}
-      />
+      <View style={{ flex: 1 }}>
+        <ListView style={styles.list}
+          dataSource={this.state.listItems}
+          renderRow={(item) => this._renderRow(item)}
+        />
+        <Modal
+          animationType={"slide"}
+          transparent={false}
+          visible={this.props.modal}
+          >
+         <View style={{marginTop: 22}}>
+          <View>
+            <TextInput
+              style={{height: 40}}
+              placeholder="Type here to translate!"
+              onChangeText={(newItemName) => this.setState({newItemName})}
+            />
+            <Button
+              onPress={() => this.props.dispatch(createItem(this.state.newItemName))}
+              title="Ajouter"
+              color="#841584"
+            />
+          </View>
+         </View>
+        </Modal>
+      </View>
     );
   }
 
@@ -48,8 +80,9 @@ class List extends React.Component {
   }
 }
 
-const mapStateToProps = ({ lists, currentList }) => ({
-  list: lists[currentList]
+const mapStateToProps = ({ lists, currentList, modal }) => ({
+  list: lists[currentList],
+  modal
 });
 
 export default connect(mapStateToProps)(List);

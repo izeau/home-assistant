@@ -2,7 +2,7 @@ import React from 'react';
 import { StyleSheet, Text, ListView, TouchableHighlight } from 'react-native';
 import { connect } from 'react-redux';
 import List from './List';
-import { setCurrentList } from './redux';
+import { setCurrentList, showModal } from './redux';
 
 class Lists extends React.Component {
   constructor(props) {
@@ -26,6 +26,8 @@ class Lists extends React.Component {
     this.props.navigator.push({
       component: List,
       title: list.name,
+      rightButtonTitle: 'Add',
+      onRightButtonPress: () => this.props.dispatch(showModal()),
     });
   }
 

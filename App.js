@@ -1,11 +1,12 @@
 import React from 'react';
 import { NavigatorIOS } from 'react-native';
 import Lists from './Lists';
-import { createStore } from 'redux';
+import { applyMiddleware, createStore } from 'redux';
 import { Provider } from 'react-redux';
+import thunk from 'redux-thunk';
 import reducer from './redux';
 
-const store = createStore(reducer);
+const store = createStore(reducer, applyMiddleware(thunk));
 
 export default class App extends React.Component {
   render() {
