@@ -102,8 +102,10 @@ export const setCurrentList = listIndex => ({
 });
 
 export const createItem = newItemName => dispatch => {
+  if (!newItemName) {
+    return;
+  }
   dispatch({ type: 'CREATE_ITEM', name: newItemName });
-  dispatch({ type: 'MODAL_VISIBILITY', visible: false });
 };
 
 export const showModal = () => {

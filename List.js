@@ -34,10 +34,31 @@ class List extends React.Component {
   render() {
     return (
       <View style={{ flex: 1 }}>
+
+        <View style={styles.addBar}>
+          <TextInput
+            style={styles.addInput}
+            placeholder="Tâche ..."
+            onChangeText={(newItemName) => this.setState({newItemName})}
+            value={this.state.newItemName}
+          />
+          <Icon.Button
+            name="md-add"
+            borderRadius={0}
+            backgroundColor="#7CBCC1"
+            iconStyle={styles.addIconItenList}
+            onPress={() => {
+              this.props.dispatch(createItem(this.state.newItemName));
+              this.setState({ newItemName: '' });
+            }}/>
+        </View>
+
         <ListView style={styles.list}
           dataSource={this.state.listItems}
+          automaticallyAdjustContentInsets={false}
           renderRow={(item) => this._renderRow(item)}
         />
+
         <Modal
           animationType={"slide"}
           transparent={false}
@@ -46,14 +67,8 @@ class List extends React.Component {
          <View style={{marginTop: 22}}>
           <View>
             <TextInput
-              style={{height: 40}}
-              placeholder="Type here to translate!"
+              placeholder="Tâche ..."
               onChangeText={(newItemName) => this.setState({newItemName})}
-            />
-            <Button
-              onPress={() => this.props.dispatch(createItem(this.state.newItemName))}
-              title="Ajouter"
-              color="#841584"
             />
           </View>
          </View>
@@ -64,12 +79,18 @@ class List extends React.Component {
 
   _renderRow(item) {
     return (
-      <TouchableHighlight underlayColor="#CCC" onPress={() => this._toggleCheck(item)}>
+      <TouchableHighlight underlayColor={'#f7f5ef'} onPress={() => this._toggleCheck(item)}>
         <View style={styles.listItem}>
           {item.checked
-            ? <Icon name="md-checkmark-circle-outline" size={18} style={{ width: 20 }} color="#090" />
-            : <View style={{ width: 20 }} /> }
-          <Text>{item.name}</Text>
+            ? <Icon name="md-checkmark-circle-outline" size={18} style={{ width: 30, padding: 10 }} color="#090" />
+            : <View style={{ width: 30 }} /> }
+          <Text style={{flex: 1, padding: 20, color: '#0C161B', fontSize: 16 }}>{item.name}</Text>
+          <Icon.Button
+            name="ios-more-outline"
+            borderRadius={0}
+            backgroundColor="#CCCDC4"
+            iconStyle={styles.iconItemList}
+            onPress={() => console.warn("edit")}/>
         </View>
       </TouchableHighlight>
     );
@@ -88,6 +109,18 @@ const mapStateToProps = ({ lists, currentList, modal }) => ({
 export default connect(mapStateToProps)(List);
 
 const styles = StyleSheet.create({
+  addBar: {
+    marginTop: 65,
+    flexDirection: 'row',
+    height: 60
+  },
+  addInput: {
+    flex:2,
+    paddingLeft: 60,
+    paddingRight: 20,
+    backgroundColor: '#f7f5ef',
+    height: 60
+  },
   list: {
     flex: 1,
   },
@@ -95,11 +128,25 @@ const styles = StyleSheet.create({
     flex: 1,
     flexDirection: 'row',
     borderTopWidth: 1,
-    borderColor: '#DDD',
+    borderColor: '#BCBDB4',
     borderStyle: 'solid',
     borderBottomWidth: 1,
     marginTop: -1,
-    padding: 10,
-    height: 40,
   },
+  addIconItenList: {
+    height: 60,
+    marginRight: 0,
+    paddingTop: 10,
+    paddingBottom: 10,
+    paddingLeft: 20,
+    paddingRight: 20
+  },
+  iconItemList: {
+    marginRight: 0,
+    paddingTop: 10,
+    paddingBottom: 10,
+    paddingLeft: 20,
+    paddingRight: 20,
+    color: '#0C161B',
+  }
 });

@@ -17,9 +17,18 @@ export default class App extends React.Component {
             component: Lists,
             title: 'Mes listes',
           }}
-          style={{flex: 1}}
+          style={{flex: 1,}}
+          transluscent={false}
+          itemWrapperStyle={styles.global}
+          tintColor={"#7CBCC1"}
         />
       </Provider>
     );
+  }
+}
+
+const styles = {
+  global: {
+    backgroundColor: '#E9E5D7'
   }
 }

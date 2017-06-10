@@ -44,10 +44,10 @@ class Lists extends React.Component {
     return (
       <TouchableHighlight
         style={styles.list}
-        underlayColor={'#CCC'}
+        underlayColor={'#f7f5ef'}
         onPress={() => this._onForward(list)}
       >
-        <Text>{list.name}</Text>
+        <Text style={{flex: 1, padding: 20, color: '#0C161B', fontSize: 16 }}>{list.name}</Text>
       </TouchableHighlight>
     );
   }
@@ -65,10 +65,9 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     borderTopWidth: 1,
-    borderColor: '#DDD',
+    borderColor: '#BCBDB4',
     borderStyle: 'solid',
     borderBottomWidth: 1,
     marginTop: -1,
-    padding: 10,
   },
 });
