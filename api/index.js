@@ -41,6 +41,18 @@ app.post('/lists/:listId/items', (req, res, next) => {
     .catch(next);
 });
 
+app.put('/lists/:listId/items/:itemId', (req, res, next) => {
+  updateItem(req.params.listId, req.params.itemId, req.body)
+    .then(() => res.sendStatus(204))
+    .catch(next);
+});
+
+app.delete('/lists/:listId/items/:itemId', (req, res, next) => {
+  deleteItem(req.params.listId, req.params.itemId)
+    .then(() => res.sendStatus(204))
+    .catch(next);
+});
+
 // Bad request handler
 
 app.use((req, res) => res.sendStatus(400));
@@ -67,8 +79,11 @@ app.use((err, req, res, next) => {
 
 // Database initialization
 
+const dbPath = join(__dirname, 'database.sqlite');
+const migrationsPath = join(__dirname, 'migrations');
+
 db.open(join(__dirname, 'database.sqlite'))
-  .then(() => db.migrate({ force: 'last', migrationsPath: join(__dirname, 'migrations') }))
+  .then(() => db.migrate({ migrationsPath, force: 'last' }))
   .then(() => app.listen(3000));
 
 // Database layer
@@ -123,8 +138,33 @@ function createItem(listId, item) {
     }))
     .then(enrichWithId({
       name: item.name,
-      checked: false
+      checked: false,
     }));
+}
+
+function updateItem(listId, itemId, item) {
+  return missingPropsCheck(item, null, ['name', 'checked'])
+    .then(({ query, parameters }) => db.run(`
+      update items set ${query}
+      where
+        id = $itemId
+        and listId = $listId
+    `, Object.assign({
+      $itemId: itemId,
+      $listId: listId,
+    }, parameters)));
+}
+
+function deleteItem(listId, itemId) {
+  return db.run(`
+    delete from items
+    where
+      id = $itemId
+      and listId = $listId
+    `, {
+      $itemId: itemId,
+      $listId: listId,
+    });
 }
 
 // Transformers
@@ -151,20 +191,41 @@ function notFoundCheck(data) {
   return data;
 }
 
-function missingPropsCheck(data, props) {
+function missingPropsCheck(data, required, optional) {
   return new Promise((resolve, reject) => {
     const err = [];
+    const sanitized = {};
+    const queryParts = [];
+    const parameters = {};
+    const requiredParameters = required || [];
+    const optionalParameters = optional || [];
 
-    for (const prop of props) {
-      if (!(prop in data)) {
+    for (const prop of requiredParameters) {
+      if (prop in data) {
+        const value = data[prop];
+
+        sanitized[prop] = value;
+        parameters[`$${prop}`] = value;
+        queryParts.push(`${prop} = $${prop}`);
+      } else {
         err.push(`missing property '${prop}' in data`);
+      }
+    }
+
+    for (const prop of optionalParameters) {
+      if (prop in data) {
+        const value = data[prop];
+
+        sanitized[prop] = value;
+        parameters[`$${prop}`] = value;
+        queryParts.push(`${prop} = $${prop}`);
       }
     }
 
     if (err.length) {
       reject(err);
     } else {
-      resolve(data);
+      resolve({ sanitized, parameters, query: queryParts.join(', ') });
     }
   });
 }
