@@ -7,6 +7,7 @@
     "jest-expo": "~1.0.1",
     "mocha": "^3.4.2",
     "nodemon": "^1.11.0",
+    "nyc": "^11.0.2",
     "react-native-scripts": "0.0.31",
     "react-test-renderer": "16.0.0-alpha.6",
     "sinon": "^2.3.4",
@@ -14,6 +15,7 @@
   },
   "main": "./node_modules/react-native-scripts/build/bin/crna-entry.js",
   "scripts": {
+    "coverage": "nyc -x api/tests -x 'api/**/*.spec.js' mocha --reporter dot api/tests 'api/**/*.spec.js'",
     "start": "react-native-scripts start & nodemon -w api api/index.js",
     "eject": "react-native-scripts eject",
     "android": "react-native-scripts android",

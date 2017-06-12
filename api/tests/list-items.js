@@ -9,7 +9,9 @@ const server = require('../server');
 
 const migrationsPath = join(__dirname, '../migrations');
 
-describe('List items', () => {
+describe('List items', function() {
+  this.slow(200);
+
   beforeEach(() => Promise.resolve()
     .then(() => db.open(':memory:'))
     .then(() => db.migrate({ migrationsPath, force: 'last' }))

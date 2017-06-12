@@ -1,4 +1,5 @@
 node_modules/
 .expo/
+.nyc_output/
 npm-debug.*
 api/database.sqlite
