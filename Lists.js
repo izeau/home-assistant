@@ -2,7 +2,7 @@ import React from 'react';
 import { StyleSheet, Text, ListView, TouchableHighlight } from 'react-native';
 import { connect } from 'react-redux';
 import List from './List';
-import { setCurrentList, showModal } from './redux';
+import { getLists, setCurrentList, showModal } from './redux';
 
 class Lists extends React.Component {
   constructor(props) {
@@ -18,6 +18,10 @@ class Lists extends React.Component {
     this.setState({
       lists: this.state.ds.cloneWithRows(lists)
     })
+  }
+
+  componentDidMount() {
+    this.props.dispatch(getLists());
   }
 
   _onForward(list) {
